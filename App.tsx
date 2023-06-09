@@ -14,12 +14,12 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: "#E6EAED",
     display: "flex",
     flexDirection: "column",
     flex: 1,
     height: "100%",
     width: "100%",
-    paddingHorizontal: 24,
-    paddingVertical: 50,
+    paddingTop: 50,
   },
 });
