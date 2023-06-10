@@ -1,12 +1,12 @@
 import { View, Text, Button, StyleSheet } from "react-native";
 import { ControlledTextInput as TextInput } from "../../components/form/controlled-text-input";
 import { ControlledPicker as Picker } from "../../components/form/controlled-picker";
-import { INewGoalForm } from "./home";
 import { useForm, SubmitHandler, Control, FieldValues } from "react-hook-form";
 import { DEFAULT_DAYS, DayPicker } from "../../components/form/day-picker";
+import { CreateGoal } from "../../library/models";
 
 interface NewGoalFormProps {
-  onSubmitGoal: (newGoal: INewGoalForm) => void;
+  onSubmitGoal: (newGoal: CreateGoal) => void;
   onCloseModal: () => void;
 }
 
@@ -18,8 +18,8 @@ export const NewGoalForm = ({
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<INewGoalForm>();
-  const onSubmit: SubmitHandler<INewGoalForm> = onSubmitGoal;
+  } = useForm<CreateGoal>();
+  const onSubmit: SubmitHandler<CreateGoal> = onSubmitGoal;
 
   return (
     <>

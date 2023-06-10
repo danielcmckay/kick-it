@@ -1,9 +1,10 @@
-import { View, Text } from "react-native";
+import { ScreenWrapper } from "../components/shared/screen-wrapper";
+import { PageTitle } from "../components/shared/page-title";
 
 export const Account = () => {
   return (
-    <View>
-      <Text>Account</Text>
-    </View>
+    <ScreenWrapper>
+      <PageTitle title="Account" />
+    </ScreenWrapper>
   );
 };

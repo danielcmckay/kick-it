@@ -1,10 +1,5 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-
-type Day = "M" | "T" | "W" | "R" | "F" | "S" | "U";
-
-export type Days = {
-  [day in Day]: boolean;
-};
+import { Days } from "../../library/models";
 
 export const DEFAULT_DAYS: Days = {
   M: false,

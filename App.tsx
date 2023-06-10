@@ -1,6 +1,7 @@
 import { StyleSheet, View } from "react-native";
-import { NavigationTab } from "./components/navigation-tab";
+import { NavigationTab } from "./components/navigation/navigation-tab";
 import { NavigationContainer } from "@react-navigation/native";
+import "react-native-gesture-handler";
 
 export default function App() {
   return (

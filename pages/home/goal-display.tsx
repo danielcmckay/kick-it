@@ -1,16 +1,28 @@
-import { View, Text, StyleSheet } from "react-native";
-import { INewGoalForm } from "./home";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { DEFAULT_DAYS, DayPicker } from "../../components/form/day-picker";
+import { useNavigation } from "@react-navigation/native";
+import { Goal } from "../../library/models";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { GoalStackParamsList } from "../../components/navigation/goal-stack-screen";
 
 interface GoalDisplayProps {
-  goal: INewGoalForm;
-  onUpdateGoal: (goal: INewGoalForm) => void;
+  goal: Goal;
+  onUpdateGoal: (goal: Goal) => void;
 }
 
 export const GoalDisplay = ({ goal, onUpdateGoal }: GoalDisplayProps) => {
+  const navigation = useNavigation<StackNavigationProp<GoalStackParamsList>>();
   return (
     <View style={styles.goalContainer}>
-      <Text style={styles.goalTitle}>{goal.name}</Text>
+      <Pressable
+        onPress={() => {
+          console.log(navigation.getState());
+
+          navigation.navigate("goal-overview", { goalId: goal.id });
+        }}
+      >
+        <Text style={styles.goalTitle}>{goal.name}</Text>
+      </Pressable>
       <DayPicker
         days={goal.frequency.days ?? DEFAULT_DAYS}
         onUpdateDays={(daysUpdate) =>

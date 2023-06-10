@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Home } from "../pages/home/home";
-import { Account } from "../pages/account";
+import { Account } from "../../pages/account";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { GoalStackScreen } from "./goal-stack-screen";
 
 const Tab = createBottomTabNavigator();
 
@@ -41,7 +41,7 @@ export const NavigationTab = () => (
       },
     })}
   >
-    <Tab.Screen name="Home" component={Home} />
+    <Tab.Screen name="Home" component={GoalStackScreen} />
     <Tab.Screen name="Account" component={Account} />
   </Tab.Navigator>
 );

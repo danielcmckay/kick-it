@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,51 +9,58 @@ import {
 } from "react-native";
 import { NewGoalForm } from "./new-goal-form";
 import { GoalDisplay } from "./goal-display";
-import { Days } from "../../components/form/day-picker";
-
-export interface INewGoalForm {
-  id: string;
-  name: string;
-  description?: string;
-  weeklyCost?: number;
-  frequency: {
-    type: "daysOfWeek";
-    days: Days;
-  };
-}
+import { PageTitle } from "../../components/shared/page-title";
+import { ScreenWrapper } from "../../components/shared/screen-wrapper";
+import { CreateGoal, Goal, UpdateGoal } from "../../library/models";
+import { usePersistence } from "../../library/use-persistence";
 
 export const Home = () => {
   const [showModal, setShowModal] = useState(false);
-  const [goals, setGoals] = useState<Record<string, INewGoalForm>>({});
+  const [goals, setGoals] = useState<Record<string, Goal>>();
 
-  const handleNewGoalSubmit = (newGoal: INewGoalForm) => {
+  useEffect(() => {
+    const fetchOverview = async () => {
+      const res = await client.getGoalOveriew();
+
+      setGoals(res);
+    };
+
+    fetchOverview();
+  }, []);
+
+  const client = usePersistence();
+
+  const handleNewGoalSubmit = async (newGoal: CreateGoal) => {
     //TODO: Replace this with generated ID
-    const key = `newGoal${Object.keys(goals).length}`;
+
+    const result = await client.createGoal(newGoal);
 
     setGoals((prev) => ({
       ...prev,
-      [key]: { ...newGoal, id: key },
+      [result.id]: result,
     }));
 
     setShowModal(false);
   };
 
+  const handleUpdateGoal = async (update: UpdateGoal) => {
+    const res = await client.updateGoal(update);
+
+    setGoals((prev) => ({ ...prev, [res.id]: res }));
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.headerText}>Currently tracking</Text>
+    <ScreenWrapper>
+      <PageTitle title="Currently tracking" />
 
       <ScrollView
         contentContainerStyle={styles.goalsWrapper}
         directionalLockEnabled={true}
       >
-        {Object.values(goals).map((goal) => (
-          <GoalDisplay
-            goal={goal}
-            onUpdateGoal={(update) =>
-              setGoals((prev) => ({ ...prev, [update.id]: { ...update } }))
-            }
-          />
-        ))}
+        {!!goals &&
+          Object.values(goals).map((goal) => (
+            <GoalDisplay goal={goal} onUpdateGoal={handleUpdateGoal} />
+          ))}
       </ScrollView>
 
       <Pressable style={styles.actionBtn} onPress={() => setShowModal(true)}>
@@ -72,21 +79,11 @@ export const Home = () => {
           />
         </View>
       </Modal>
-    </View>
+    </ScreenWrapper>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    height: "100%",
-    display: "flex",
-    justifyContent: "space-evenly",
-    alignItems: "flex-start",
-  },
-  headerText: {
-    fontSize: 24,
-  },
   goalsWrapper: {
     width: "95%",
     display: "flex",
@@ -105,6 +102,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    zIndex: 1000,
   },
   modal: {
     height: "100%",
