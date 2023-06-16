@@ -2,14 +2,17 @@ import { StyleSheet, View } from "react-native";
 import { NavigationTab } from "./components/navigation/navigation-tab";
 import { NavigationContainer } from "@react-navigation/native";
 import "react-native-gesture-handler";
+import { GoalProvider } from "./context/goal-context";
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <View style={styles.container}>
-        <NavigationTab />
-      </View>
-    </NavigationContainer>
+    <GoalProvider>
+      <NavigationContainer>
+        <View style={styles.container}>
+          <NavigationTab />
+        </View>
+      </NavigationContainer>
+    </GoalProvider>
   );
 }
 

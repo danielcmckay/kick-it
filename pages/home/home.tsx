@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -13,26 +13,28 @@ import { PageTitle } from "../../components/shared/page-title";
 import { ScreenWrapper } from "../../components/shared/screen-wrapper";
 import { CreateGoal, Goal, UpdateGoal } from "../../library/models";
 import { usePersistence } from "../../library/use-persistence";
+import { useFocusEffect } from "@react-navigation/native";
 
 export const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const [goals, setGoals] = useState<Record<string, Goal>>();
-
-  useEffect(() => {
-    const fetchOverview = async () => {
-      const res = await client.getGoalOveriew();
-
-      setGoals(res);
-    };
-
-    fetchOverview();
-  }, []);
-
   const client = usePersistence();
 
-  const handleNewGoalSubmit = async (newGoal: CreateGoal) => {
-    //TODO: Replace this with generated ID
+  useFocusEffect(
+    useCallback(() => {
+      const fetchOverview = async () => {
+        const res = await client.getGoalOveriew();
 
+        setGoals(res);
+      };
+
+      fetchOverview();
+
+      return;
+    }, [])
+  );
+
+  const handleNewGoalSubmit = async (newGoal: CreateGoal) => {
     const result = await client.createGoal(newGoal);
 
     setGoals((prev) => ({
@@ -59,12 +61,16 @@ export const Home = () => {
       >
         {!!goals &&
           Object.values(goals).map((goal) => (
-            <GoalDisplay goal={goal} onUpdateGoal={handleUpdateGoal} />
+            <GoalDisplay
+              key={goal.id}
+              goal={goal}
+              onUpdateGoal={handleUpdateGoal}
+            />
           ))}
       </ScrollView>
 
       <Pressable style={styles.actionBtn} onPress={() => setShowModal(true)}>
-        {() => <Text>+</Text>}
+        {() => <Text style={styles.actionBtnText}>+</Text>}
       </Pressable>
       <Modal
         presentationStyle="pageSheet"
@@ -74,7 +80,7 @@ export const Home = () => {
       >
         <View style={styles.modal}>
           <NewGoalForm
-            onSubmitGoal={handleNewGoalSubmit}
+            onSubmitGoal={(goal) => handleNewGoalSubmit(goal as CreateGoal)}
             onCloseModal={() => setShowModal(false)}
           />
         </View>
@@ -97,12 +103,16 @@ const styles = StyleSheet.create({
     backgroundColor: "green",
     color: "white",
     position: "absolute",
-    top: 650,
+    top: 500,
     right: 50,
     display: "flex",
-    alignItems: "center",
+    flexDirection: "row",
     justifyContent: "center",
     zIndex: 1000,
+  },
+  actionBtnText: {
+    color: "white",
+    fontSize: 36,
   },
   modal: {
     height: "100%",

@@ -2,8 +2,13 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import { DEFAULT_DAYS, DayPicker } from "../../components/form/day-picker";
 import { useNavigation } from "@react-navigation/native";
 import { Goal } from "../../library/models";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { GoalStackParamsList } from "../../components/navigation/goal-stack-screen";
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { useContext } from "react";
+import { CompositeScreenProps } from "@react-navigation/core";
+import { GoalContext } from "../../context/goal-context";
+import { NavTabParamList } from "../../components/navigation/navigation-tab";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { GoalTabParamList } from "../../components/navigation/goal-stack-screen";
 
 interface GoalDisplayProps {
   goal: Goal;
@@ -11,14 +16,18 @@ interface GoalDisplayProps {
 }
 
 export const GoalDisplay = ({ goal, onUpdateGoal }: GoalDisplayProps) => {
-  const navigation = useNavigation<StackNavigationProp<GoalStackParamsList>>();
+  const { setCurrentGoal } = useContext(GoalContext);
+  const navigation = useNavigation<StackNavigationProp<NavTabParamList>>();
   return (
     <View style={styles.goalContainer}>
       <Pressable
         onPress={() => {
-          console.log(navigation.getState());
-
-          navigation.navigate("goal-overview", { goalId: goal.id });
+          setCurrentGoal(goal);
+          navigation.navigate("goal-overview", {
+            // @ts-ignore
+            screen: "goal-details",
+            params: { goalId: goal.id },
+          });
         }}
       >
         <Text style={styles.goalTitle}>{goal.name}</Text>

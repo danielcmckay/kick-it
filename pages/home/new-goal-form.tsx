@@ -3,14 +3,16 @@ import { ControlledTextInput as TextInput } from "../../components/form/controll
 import { ControlledPicker as Picker } from "../../components/form/controlled-picker";
 import { useForm, SubmitHandler, Control, FieldValues } from "react-hook-form";
 import { DEFAULT_DAYS, DayPicker } from "../../components/form/day-picker";
-import { CreateGoal } from "../../library/models";
+import { CreateGoal, Goal, UpdateGoal } from "../../library/models";
 
 interface NewGoalFormProps {
-  onSubmitGoal: (newGoal: CreateGoal) => void;
+  currentGoal?: Goal;
+  onSubmitGoal: (newGoal: CreateGoal | UpdateGoal) => void;
   onCloseModal: () => void;
 }
 
 export const NewGoalForm = ({
+  currentGoal,
   onCloseModal,
   onSubmitGoal,
 }: NewGoalFormProps) => {
@@ -18,8 +20,8 @@ export const NewGoalForm = ({
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<CreateGoal>();
-  const onSubmit: SubmitHandler<CreateGoal> = onSubmitGoal;
+  } = useForm<CreateGoal>({ defaultValues: currentGoal });
+  const onSubmit: SubmitHandler<CreateGoal | UpdateGoal> = onSubmitGoal;
 
   return (
     <>

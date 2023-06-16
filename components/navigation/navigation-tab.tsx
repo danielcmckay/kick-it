@@ -2,8 +2,16 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Account } from "../../pages/account";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { GoalStackScreen } from "./goal-stack-screen";
+import { Home } from "../../pages/home/home";
 
-const Tab = createBottomTabNavigator();
+export type NavTabParamList = {
+  ["Home"]: undefined;
+  ["goal-overview"]: { goalId: string };
+  ["Account"]: undefined;
+  ["goal-overview"]: { goalId: string };
+};
+
+const Tab = createBottomTabNavigator<NavTabParamList>();
 
 export const NavigationTab = () => (
   <Tab.Navigator
@@ -36,12 +44,17 @@ export const NavigationTab = () => (
       tabBarIconStyle: { color: "white" },
       tabBarStyle: {
         backgroundColor: "#738EA6",
-        height: 115,
-        paddingBottom: 50,
+        height: 100,
+        paddingBottom: 25,
       },
     })}
   >
-    <Tab.Screen name="Home" component={GoalStackScreen} />
+    <Tab.Screen name="Home" component={Home} />
+    <Tab.Screen
+      name="goal-overview"
+      options={{ tabBarItemStyle: { display: "none" }, headerShown: false }}
+      component={GoalStackScreen}
+    />
     <Tab.Screen name="Account" component={Account} />
   </Tab.Navigator>
 );
